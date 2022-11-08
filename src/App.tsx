@@ -68,7 +68,7 @@ function App() {
   }, [ticTacToe.filledSquares, ticTacToe.turnNum])
 
   return (
-    <div className='main-wrapper'>
+    <div className={`main-wrapper ${ticTacToe.isGameEnded ? 'game-ended' : ''}`}>
       <h1>Tic Tac Toe</h1>
       {!ticTacToe.isGameEnded && <p className='centered-text'>Whose turn: {ticTacToe.whoseTurn}</p>}
       {ticTacToe.isGameEnded && (

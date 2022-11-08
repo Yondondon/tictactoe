@@ -56,7 +56,8 @@
 }
 
 .square.cross,
-.square.zero {
+.square.zero,
+.game-ended .square {
   cursor: default;
 }
 
