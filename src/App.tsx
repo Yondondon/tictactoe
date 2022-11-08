@@ -1,56 +1,87 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from './config/hooks';
+import { changeTurn, endGame, setWinner, resetGame } from './config/reducer';
+import { Row } from './components/Row/Row';
+
 import './App.css';
 
+const winOptions = [
+  ['11', '12', '13'],
+  ['21', '22', '23'],
+  ['31', '32', '33'],
+  ['11', '21', '31'],
+  ['12', '22', '32'],
+  ['13', '23', '33'],
+  ['11', '22', '33'],
+  ['13', '22', '31']
+] as any;
+
 function App() {
+  const dispatch = useAppDispatch();
+  const ticTacToe = useAppSelector(state => state.ticTacToe);
+
+  const buildRows = () => {
+    const rowsArr = [];
+    for(let i = 1; i <= 3; i++) {
+      rowsArr.push(<Row key={Math.random()} rowId={i}/>)
+    }
+    return rowsArr;
+  }
+
+  const checkWin = () => {
+    const coords = [] as any;
+
+    //transformation of array for easy to compare
+    ticTacToe.filledSquares.filter(item => item.figure === ticTacToe.whoseTurn).map(item => {
+      coords.push(item.id);
+    })
+
+    //check if coords matches any of win options
+    const result = winOptions.find((item: any[]) => {
+      return item.every((val: string) => coords.includes(val))
+    })
+    return result;
+  }
+
+  const handleResetGame = () => {
+    dispatch(resetGame())
+  }
+
+  useEffect(() => {
+    if(ticTacToe.filledSquares.length > 0 && ticTacToe.turnNum > 0) {
+      const nextTurn = ticTacToe.whoseTurn === 'cross' ? 'zero' : 'cross';
+      dispatch(changeTurn(nextTurn))
+    }
+    if(ticTacToe.turnNum === 9 && !checkWin()) {
+      dispatch(endGame())
+      dispatch(setWinner('draw'))
+    }
+  }, [ticTacToe.turnNum])
+
+  useEffect(() => {
+    if(ticTacToe.turnNum >= 5) {
+      if(checkWin()) {
+        dispatch(endGame())
+        dispatch(setWinner(ticTacToe.whoseTurn))
+      }
+    }
+  }, [ticTacToe.filledSquares, ticTacToe.turnNum])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+    <div className='main-wrapper'>
+      <h1>Tic Tac Toe</h1>
+      {!ticTacToe.isGameEnded && <p className='centered-text'>Whose turn: {ticTacToe.whoseTurn}</p>}
+      {ticTacToe.isGameEnded && (
+        <p className='centered-text'>
+          {ticTacToe.winner === 'draw' ? 'It\'s a draw!' : `Winner is: ${ticTacToe.winner}`}
         </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      )}
+      <div className='field-wrapper'>
+        {buildRows()}
+      </div>
+      <button className='resetBtn' onClick={handleResetGame}>
+        {`${ticTacToe.isGameEnded ? 'New game' : 'Reset game'}`}
+      </button>
     </div>
   );
 }

@@ -1,39 +1,87 @@
-.App {
+.main-wrapper {
+  padding: 30px 0 0;
+}
+
+.main-wrapper h1 {
+  margin: 0 0 30px;
+  text-align: center;
+  position: relative;
+  line-height: 1;
+}
+
+.main-wrapper h1::after {
+  display: block;
+  content: '';
+  width: 50px;
+  height: 1px;
+  background-color: #000;
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.centered-text {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.field-wrapper {
+  width: 240px;
+  margin: 0 auto;
+  border: 2px solid #000;
+  background-color: #ff9846;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
-}
-
-.App-header {
-  min-height: 100vh;
+.row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  border-bottom: 1px solid #000;
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
+.row:last-child,
+.square:last-child {
+  border: none;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.square {
+  border-right: 1px solid #000;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  position: relative;
+  font-family: 'Arial', sans-serif;
+  font-size: 50px;
+  line-height: 50px;
+}
+
+.square.cross,
+.square.zero {
+  cursor: default;
+}
+
+.square.cross::after,
+.square.zero::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.square.cross::after {
+  content: 'X';
+}
+.square.zero::after {
+  content: 'O';
+}
+
+.resetBtn {
+  margin: 30px auto 0;
+  display: block;
+  border: none;
+  padding: 10px 25px;
+  font-family: 'Consolas', sans-serif;
+  cursor: pointer;
+  background-color: #ad0000;
+  color: #fff;
 }
